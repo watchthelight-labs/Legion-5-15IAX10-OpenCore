@@ -1,9 +1,5 @@
 # Legion 5 15IAX10 OpenCore
 
-> **Heads up:** a good portion of this code is AI generated. I do understand how it works,
-> and I'm happy to explain any of it. If something looks wrong or you have a question,
-> open an issue or ping me on Discord (`watchthelight`).
-
 The OpenCore EFI, ACPI tables and config for running macOS on a Lenovo Legion 5 15IAX10 (machine type 83F0, BIOS S2CN26WW): Intel Core Ultra 9 275HX (Arrow Lake-HX), NVIDIA RTX 5070 Laptop (`10DE:2D18`), Intel iGPU (`8086:7D67`), MediaTek MT7925 Wi-Fi and Bluetooth, Realtek RTL8111 Ethernet, WD SN7100S NVMe, 2560x1600 165 Hz panel. It runs macOS Tahoe 26.7.1 (25G241) as my daily system, with macOS Sequoia 15.8.1 also booting from the same EFI. This is the config as it runs here, with the machine identity replaced by placeholders.
 
 Most of the hardware needed its own driver, which is why this org exists. The config ties them together.

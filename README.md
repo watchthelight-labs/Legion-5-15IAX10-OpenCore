@@ -111,7 +111,7 @@ Rollback: F12 and pick the USB stick with a known-good copy of this EFI. Nothing
 
 ## Credits
 
-acidanthera (OpenCore, Lilu and the kexts above), Dortania (the guides and the shutdown fix pattern, RehabMan's FixShutdown), VoodooI2C, Mieze, 1Revenger1, NullMoth Systems (the NVIDIA driver NvGfx forks), the Clover team (VoodooHDA), thanhnndev (itlmt7925, the first MT7925 driver for macOS).
+acidanthera (OpenCore, Lilu and the kexts above), Dortania (the guides and the shutdown fix pattern, RehabMan's FixShutdown), VoodooI2C, Mieze, 1Revenger1, NullMoth Systems (the NVIDIA driver NvGfx forks), the Clover team (VoodooHDA), thanhnndev (itlmt7925, the first MT7925 driver for macOS), saspol ([UltraWake](https://github.com/saspol/UltraWake), the Arrow Lake GPE 0x6B/0x6E self-wake analysis we will follow when sleep is turned on), johnfanv2 and the [LenovoLegionLinux](https://github.com/johnfanv2/LenovoLegionLinux) contributors (the S2CN EC and WMI fan map).
 
 ## Licence
 

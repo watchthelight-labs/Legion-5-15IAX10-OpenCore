@@ -76,7 +76,7 @@ Audio on Tahoe is VoodooHDA in `/Library/Extensions`, not injected by OpenCore. 
 ### Settings worth knowing
 
 - `Kernel > Emulate`: `Cpuid1Data` spoofs a Comet Lake CPU (family 6 model 0xA5); XNU rejects the real family 6 model 0xC6.
-- `Kernel > Quirks`: `ProvideCurrentCpuInfo` (hybrid CPUs need it; without it the boot hangs at `EXITBS:START`), `DisableIoMapper` and `DisableIoMapperMapping` (with AppleVTD on, the NVIDIA driver reads IOMMU addresses from the BARs and refuses the card), `AppleXcpmCfgLock`, `DisableLinkeditJettison`, `PanicNoKextDump`, `PowerTimeoutKernelPanic`, `SetApfsTrimTimeout -1`.
+- `Kernel > Quirks`: `ProvideCurrentCpuInfo` (hybrid CPUs need it; without it the boot hangs at `EXITBS:START`), `DisableIoMapper` and `DisableIoMapperMapping` (with AppleVTD on, the NVIDIA driver reads IOMMU addresses from the BARs and refuses the card), `AppleXcpmCfgLock`, `DisableLinkeditJettison`, `PanicNoKextDump`, `PowerTimeoutKernelPanic`, `SetApfsTrimTimeout 0` (skips the TRIM of all free space that APFS runs at every mount; after a resize it took about 20 s of each boot).
 - `Booter > Quirks`: `ForceExitBootServices` (a real hang at ExitBootServices without it), `ResizeAppleGpuBars 0` (the RTX 5070 boots with an 8 GB BAR1; NvGfx resizes it back up itself), `SetupVirtualMap` off, `DevirtualiseMmio` off, the usual rest on.
 - `UEFI > Quirks`: `ReleaseUsbOwnership`, `RequestBootVarRouting`, `ResizeGpuBars -1`.
 - `Misc > Boot`: no picker (`ShowPicker false`, hold Option or Esc while OpenCore starts to get it), `LauncherOption Full` so OpenCore stays first in the firmware boot order, `Timeout 0`.

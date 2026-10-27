@@ -10,15 +10,15 @@ Most of the hardware needed its own driver, which is why this org exists. The co
 |---|---|---|
 | Boot | OpenCore 1.0.8 on its own EFI partition; Comet Lake CPUID spoof, `ProvideCurrentCpuInfo`, a classic MADT in place of the firmware's x2APIC-only one, 11 ACPI patches | boots Tahoe and Sequoia; [LegionCbmrFix](https://github.com/watchthelight-labs/LegionCbmrFix) unloads a firmware driver that otherwise panics macOS |
 | Graphics | [NvGfx](https://github.com/watchthelight-labs/NvGfx) (fork of NullMoth's NVIDIA driver) on the RTX 5070 | Metal 3, 2560x1600 at 165 Hz, 115 W; the Dock's blur draws as blocks |
-| Wi-Fi | [MtkWlan](https://github.com/watchthelight-labs/MtkWlan) 0.9.0 | open networks and (host-tested) WPA2-PSK as an Ethernet-class interface; no Wi-Fi menu, no AirDrop |
+| Wi-Fi | [MtkWlan](https://github.com/watchthelight-labs/MtkWlan) 0.12.1 + [MtkWlanNative](https://github.com/watchthelight-labs/mt7925-hackintosh-wifi-native) 0.4.13 | the Wi-Fi menu works: scans, joins, saves networks and auto-joins at boot (boot-args `mtkfe=native mtknativeif=1`) |
 | Bluetooth | [MtkBt](https://github.com/watchthelight-labs/MtkBt) + BlueToolFixup + [LegionBtFix](https://github.com/watchthelight-labs/LegionBtFix) | pairing, LE, AirPods (audio only with the workaround in LegionBtFix) |
-| Audio | Tahoe: [VoodooHDA-Legion](https://github.com/watchthelight-labs/VoodooHDA-Legion) in `/Library/Extensions`; Sequoia: AppleALC with `alcid=18` | speakers and volume; microphone detected, jack and HDMI untested |
+| Audio | AppleALC 1.9.8 with `alcid=18` (ALC257); [VoodooHDA-Legion](https://github.com/watchthelight-labs/VoodooHDA-Legion) is the older route and still sits in `/Library/Extensions` | speakers and volume; microphone detected, jack and HDMI untested |
 | Touchpad | VoodooI2C + VoodooI2CHID + [LegionI2CArrowLake](https://github.com/watchthelight-labs/LegionI2CArrowLake) | works, polled (`-vi2c-force-polling`) |
 | Keyboard | the ITE 8258 USB controller with [LegionITEKbdFix](https://github.com/watchthelight-labs/LegionITEKbdFix); VoodooPS2 for the PS/2 device the DSDT declares | types; no backlight control; the arrow keys and F-key dome on my unit are hardware faults |
 | Ethernet | RealtekRTL8111 | works |
 | Battery, EC | VirtualSMC + SMCBatteryManager + ECEnabler, SSDT-EC-USBX | battery shown |
 | Shut down | SSDT-FIXSHUTDOWN + `_PTS` rename | powers off (before: restarted) |
-| CPU | 24 cores, name via RestrictEvents, `ProcessorType 0x0F01` | works; turbo stays near 3.7 GHz single-core, not yet understood |
+| CPU | 24 cores, name via RestrictEvents, `ProcessorType 0x0F01` | works; [LegionCpuPower](https://github.com/watchthelight-labs/LegionCpuPower) lifts the hidden power limit and gives every core its own HWP range, with a thermal guard and fan control |
 | Sleep | disabled (`pmset sleep 0 hibernatemode 0 standby 0`) | not supported |
 | Webcam, SD, Thunderbolt | USB port enabled for the webcam | untested |
 
@@ -59,15 +59,17 @@ Binaries are not in this repository. Get each from its release page; the version
 | VoodooPS2Controller (+ Keyboard, VoodooInput) | 2.3.7 | acidanthera |
 | VoodooI2C (+ VoodooGPIO, VoodooI2CServices), VoodooI2CHID | 2.9.1 | VoodooI2C |
 | LegionI2CArrowLake | 1.1.0 | this org |
-| MtkWlan | 0.9.0 | this org |
+| MtkWlan | 0.12.1 | this org |
+| MtkWlanNative | 0.4.13 | this org, Tahoe 25.x only |
+| LegionCpuPower | 0.4.1 | this org, Tahoe 25.x only |
 | AMFIPass | 1.4.1 | dortania (lets WindowServer load the ad hoc signed Metal plugin) |
-| AppleALC | 1.9.8 | acidanthera (audio on Sequoia; no effect on Tahoe) |
-| LegionCpuProbe | 1.0.0 | this org, read-only MSR probe for the turbo question; optional |
+| AppleALC | 1.9.8 | acidanthera (audio, `alcid=18`) |
+| LegionCpuProbe | 1.1.0 | this org, read-only MSR probe for the turbo question; optional |
 | BlueToolFixup | 2.7.2 | acidanthera (BrcmPatchRAM release) |
 | LegionBtFix | 0.2.0 | this org, `MinKernel 25.0.0`, `MaxKernel 25.99.99` |
-| MtkBt | 0.2.0 | this org |
+| MtkBt | 0.2.4 | this org |
 
-Audio on Tahoe is VoodooHDA in `/Library/Extensions`, not injected by OpenCore. Graphics is NvGfx's installer package.
+Graphics is NvGfx's installer package, not injected by OpenCore. The published `config.plist` still lists the kexts of 2026-10-17 and does not yet load MtkWlanNative or LegionCpuPower or carry `mtkfe=native mtknativeif=1`; it is due a refresh from the live config.
 
 ### Drivers and tools
 
@@ -83,7 +85,7 @@ Audio on Tahoe is VoodooHDA in `/Library/Extensions`, not injected by OpenCore. 
 - `Misc > Security`: `SecureBootModel Disabled`, `Vault Optional`, `ScanPolicy 0`.
 - `NVRAM`: `csr-active-config 0x0A43` (unsigned and unapproved kexts, for NvGfx and VoodooHDA), `WriteFlash false`, the two BlueToolFixup keys, `revcpuname` for the CPU name.
 - `PlatformInfo`: `MacBookPro16,1`, `ProcessorType 0x0F01` (the Comet Lake spoof makes OpenCore pick a type macOS cannot name with 24 cores).
-- `boot-args`: `-v keepsyms=1 debug=0x100` (a panic stays on screen), `-vi2c-force-polling`, `revpatch=sbvmm,cpuname revcpu=1`, the NvGfx set (`nvfb=1 nvaccel=1 nvfbheads=4 -nvkmsnosmooth -nvaccelnoheadless nvrmacpibl=1 nvrmphysctl=1 nvrmnvpcf=1 nvrmtgp=1 nvfbhidpi=1 nvrmdiag=1`), the AMFI relaxations NvGfx's plugin needs (`amfi_get_out_of_my_way=0x1 amfi=0x80 ipc_control_port_options=0`), and `alcid=18` for Sequoia.
+- `boot-args`: `-v keepsyms=1 debug=0x100` (a panic stays on screen), `-vi2c-force-polling`, `revpatch=sbvmm,cpuname revcpu=1`, the NvGfx set (`nvfb=1 nvaccel=1 nvfbheads=4 -nvkmsnosmooth -nvaccelnoheadless nvrmacpibl=1 nvrmphysctl=1 nvrmnvpcf=1 nvrmtgp=1 nvfbhidpi=1 nvrmdiag=1`), the AMFI relaxations NvGfx's plugin needs (`amfi_get_out_of_my_way=0x1 amfi=0x80 ipc_control_port_options=0`), and `alcid=18` for AppleALC.
 
 ## BIOS
 

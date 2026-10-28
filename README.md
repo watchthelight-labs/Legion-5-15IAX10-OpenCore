@@ -26,7 +26,7 @@ Windows stays on its own ESP and is started with F12 and Windows Boot Manager, n
 
 ## What is in the EFI
 
-`EFI/OC/config.plist` is the live config with the four identity fields set to OpenCore's sample placeholders. Everything else is as it boots here, including the `DEBUG` logging target (it writes `opencore-*.txt` to the EFI partition; harmless with a RELEASE build).
+`EFI/OC/config.plist` is the live config with the four identity fields set to OpenCore's sample placeholders. Everything else is as it boots here, including the `DEBUG` logging target (it writes `opencore-*.txt` to the EFI partition; harmless with a RELEASE build). Why each table, patch, quirk and kext is there: [docs/HOW-IT-WORKS.md](docs/HOW-IT-WORKS.md).
 
 ### ACPI
 

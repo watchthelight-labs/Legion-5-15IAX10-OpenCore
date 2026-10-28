@@ -1,6 +1,6 @@
 # Legion 5 15IAX10 OpenCore
 
-The OpenCore EFI, ACPI tables and config for running macOS on a Lenovo Legion 5 15IAX10 (machine type 83F0, BIOS S2CN26WW): Intel Core Ultra 9 275HX (Arrow Lake-HX), NVIDIA RTX 5070 Laptop (`10DE:2D18`), Intel iGPU (`8086:7D67`), MediaTek MT7925 Wi-Fi and Bluetooth, Realtek RTL8111 Ethernet, WD SN7100S NVMe, 2560x1600 165 Hz panel. It runs macOS Tahoe 26.7.1 (25G241) as my daily system, with macOS Sequoia 15.8.1 also booting from the same EFI. This is the config as it runs here, with the machine identity replaced by placeholders.
+The OpenCore EFI, ACPI tables and config for running macOS on a Lenovo Legion 5 15IAX10 (machine type 83F0, BIOS S2CN26WW): Intel Core Ultra 9 275HX (Arrow Lake-HX), NVIDIA RTX 5070 Laptop (`10DE:2D18`), Intel iGPU (`8086:7D67`), MediaTek MT7925 Wi-Fi and Bluetooth, Realtek RTL8111 Ethernet, WD SN7100S NVMe, 2560x1600 165 Hz panel. It runs macOS Tahoe 26.7.2 (25G332, since 2026-10-28; 26.7.1 25G241 before) as my daily system, with macOS Sequoia 15.8.1 also booting from the same EFI. This is the config as it runs here, with the machine identity replaced by placeholders.
 
 Most of the hardware needed its own driver, which is why this org exists. The config ties them together.
 
@@ -10,7 +10,7 @@ Most of the hardware needed its own driver, which is why this org exists. The co
 |---|---|---|
 | Boot | OpenCore 1.0.8 on its own EFI partition; Comet Lake CPUID spoof, `ProvideCurrentCpuInfo`, a classic MADT in place of the firmware's x2APIC-only one, 11 ACPI patches | boots Tahoe and Sequoia; [LegionCbmrFix](https://github.com/watchthelight-labs/LegionCbmrFix) unloads a firmware driver that otherwise panics macOS |
 | Graphics | [NvGfx](https://github.com/watchthelight-labs/NvGfx) (fork of NullMoth's NVIDIA driver) on the RTX 5070 | Metal 3, 2560x1600 at 165 Hz, 115 W; the Dock's blur draws as blocks |
-| Wi-Fi | [MtkWlan](https://github.com/watchthelight-labs/MtkWlan) 0.12.1 + [MtkWlanNative](https://github.com/watchthelight-labs/mt7925-hackintosh-wifi-native) 0.4.13 | the Wi-Fi menu works: scans, joins, saves networks and auto-joins at boot (boot-args `mtkfe=native mtknativeif=1`) |
+| Wi-Fi | [MtkWlan](https://github.com/watchthelight-labs/MtkWlan) 0.12.1 + [MtkWlanNative](https://github.com/watchthelight-labs/mt7925-hackintosh-wifi-native) 0.4.14 | the Wi-Fi menu works: scans, joins, saves networks and auto-joins at boot (boot-args `mtkfe=native mtknativeif=1`) |
 | Bluetooth | [MtkBt](https://github.com/watchthelight-labs/MtkBt) + BlueToolFixup + [LegionBtFix](https://github.com/watchthelight-labs/LegionBtFix) | pairing, LE, AirPods (audio only with the workaround in LegionBtFix) |
 | Audio | AppleALC 1.9.8 with `alcid=18` (ALC257); [VoodooHDA-Legion](https://github.com/watchthelight-labs/VoodooHDA-Legion) is the older route and still sits in `/Library/Extensions` | speakers and volume; microphone detected, jack and HDMI untested |
 | Touchpad | VoodooI2C + VoodooI2CHID + [LegionI2CArrowLake](https://github.com/watchthelight-labs/LegionI2CArrowLake) | works, polled (`-vi2c-force-polling`) |
@@ -60,13 +60,13 @@ Binaries are not in this repository. Get each from its release page; the version
 | VoodooI2C (+ VoodooGPIO, VoodooI2CServices), VoodooI2CHID | 2.9.1 | VoodooI2C |
 | LegionI2CArrowLake | 1.1.0 | this org |
 | MtkWlan | 0.12.1 | this org |
-| MtkWlanNative | 0.4.13 | this org, Tahoe 25.x only |
+| MtkWlanNative | 0.4.14 | this org, Tahoe 25.x only (26.7.1 and 26.7.2) |
 | LegionCpuPower | 0.4.1 | this org, Tahoe 25.x only |
 | AMFIPass | 1.4.1 | dortania (lets WindowServer load the ad hoc signed Metal plugin) |
 | AppleALC | 1.9.8 | acidanthera (audio, `alcid=18`) |
 | LegionCpuProbe | 1.1.0 | this org, read-only MSR probe for the turbo question; optional |
 | BlueToolFixup | 2.7.2 | acidanthera (BrcmPatchRAM release) |
-| LegionBtFix | 0.2.0 | this org, `MinKernel 25.0.0`, `MaxKernel 25.99.99` |
+| LegionBtFix | 0.3.0 | this org, any Tahoe build with the same bluetoothd code, `MinKernel 25.0.0`, `MaxKernel 25.99.99` |
 | MtkBt | 0.2.4 | this org |
 
 Graphics is NvGfx's installer package, not injected by OpenCore. The published `config.plist` still lists the kexts of 2026-10-17 and does not yet load MtkWlanNative or LegionCpuPower or carry `mtkfe=native mtknativeif=1`; it is due a refresh from the live config.

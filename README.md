@@ -12,7 +12,7 @@ Most of the hardware needed its own driver, which is why this org exists. The co
 | Graphics | [NvGfx](https://github.com/watchthelight-labs/NvGfx) (fork of NullMoth's NVIDIA driver) on the RTX 5070 | Metal 3, 2560x1600 at 165 Hz, 115 W (NvGfx 2.6.2-nvgfx.1 fixed the blocks in the Dock blur) |
 | Wi-Fi | [MtkWlan](https://github.com/watchthelight-labs/MtkWlan) 0.12.1 + [MtkWlanNative](https://github.com/watchthelight-labs/mt7925-hackintosh-wifi-native) 0.4.14 | the Wi-Fi menu works: scans, joins, saves networks and auto-joins at boot (boot-args `mtkfe=native mtknativeif=1`) |
 | Bluetooth | [MtkBt](https://github.com/watchthelight-labs/MtkBt) + BlueToolFixup + [LegionBtFix](https://github.com/watchthelight-labs/LegionBtFix) | pairing, LE, AirPods (audio only with the workaround in LegionBtFix) |
-| Audio | AppleALC 1.9.8 with `alcid=18` (ALC257); [VoodooHDA-Legion](https://github.com/watchthelight-labs/VoodooHDA-Legion) is the older route and still sits in `/Library/Extensions` | speakers and volume; microphone detected, jack and HDMI untested |
+| Audio | Tahoe: [VoodooHDA-Legion](https://github.com/watchthelight-labs/VoodooHDA-Legion) in `/Library/Extensions` (Tahoe has no AppleHDA); Sequoia: AppleALC 1.9.8 with `alcid=18` (ALC257; injected on both, used on Sequoia) | speakers and volume; microphone detected, jack and HDMI untested |
 | Touchpad | VoodooI2C + VoodooI2CHID + [LegionI2CArrowLake](https://github.com/watchthelight-labs/LegionI2CArrowLake) | works, polled (`-vi2c-force-polling`) |
 | Keyboard | the ITE 8258 USB controller with [LegionITEKbdFix](https://github.com/watchthelight-labs/LegionITEKbdFix); VoodooPS2 for the PS/2 device the DSDT declares | types; no backlight control; the arrow keys and F-key dome on my unit are hardware faults |
 | Ethernet | RealtekRTL8111 | works |
@@ -63,7 +63,7 @@ Binaries are not in this repository. Get each from its release page; the version
 | MtkWlanNative | 0.4.14 | this org, Tahoe only (Darwin 25), checked on 26.7.1 and 26.7.2 |
 | LegionCpuPower | 0.4.1 | this org, Tahoe only (Darwin 25) |
 | AMFIPass | 1.4.1 | dortania (lets WindowServer load the ad hoc signed Metal plugin) |
-| AppleALC | 1.9.8 | acidanthera (audio, `alcid=18`) |
+| AppleALC | 1.9.8 | acidanthera (audio on Sequoia, `alcid=18`) |
 | LegionCpuProbe | 1.1.0 | this org, read-only MSR probe for the turbo question; optional |
 | BlueToolFixup | 2.7.2 | acidanthera (BrcmPatchRAM release) |
 | LegionBtFix | 0.3.0 | this org, any Tahoe build with the same bluetoothd code, `MinKernel 25.0.0`, `MaxKernel 25.99.99` |

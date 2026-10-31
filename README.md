@@ -1,4 +1,6 @@
-# Legion 5 15IAX10 OpenCore
+# WTLLegionOpenCore
+
+Renamed from `Legion-5-15IAX10-OpenCore` on 2026-10-31; the EFI layout is unchanged. Old links redirect here.
 
 The OpenCore EFI, ACPI tables and config for running macOS on a Lenovo Legion 5 15IAX10 (machine type 83F0, BIOS S2CN26WW): Intel Core Ultra 9 275HX (Arrow Lake-HX), NVIDIA RTX 5070 Laptop (`10DE:2D18`), Intel iGPU (`8086:7D67`), MediaTek MT7925 Wi-Fi and Bluetooth, Realtek RTL8111 Ethernet, WD SN7100S NVMe, 2560x1600 165 Hz panel. It runs macOS Tahoe 26.7.2 (25G332, since 2026-10-28; 26.7.1 25G241 before) as my daily system, with macOS Sequoia 15.8.1 also booting from the same EFI. This is the config as it runs here, with the machine identity replaced by placeholders.
 
@@ -8,17 +10,17 @@ Most of the hardware needed its own driver, which is why this org exists. The co
 
 | Part | How | State |
 |---|---|---|
-| Boot | OpenCore 1.0.8 on its own EFI partition; Comet Lake CPUID spoof, `ProvideCurrentCpuInfo`, a classic MADT in place of the firmware's x2APIC-only one, 11 ACPI patches | boots Tahoe and Sequoia; [LegionCbmrFix](https://github.com/watchthelight-labs/LegionCbmrFix) unloads a firmware driver that otherwise panics macOS |
-| Graphics | [NvGfx](https://github.com/watchthelight-labs/NvGfx) (fork of NullMoth's NVIDIA driver) on the RTX 5070 | Metal 3, 2560x1600 at 165 Hz, 115 W (NvGfx 2.6.2-nvgfx.1 fixed the blocks in the Dock blur) |
-| Wi-Fi | [MtkWlan](https://github.com/watchthelight-labs/MtkWlan) 0.12.1 + [MtkWlanNative](https://github.com/watchthelight-labs/mt7925-hackintosh-wifi-native) 0.4.15 | the Wi-Fi menu works: scans, joins, saves networks and auto-joins at boot (boot-args `mtkfe=native mtknativeif=1`) |
-| Bluetooth | [MtkBt](https://github.com/watchthelight-labs/MtkBt) + BlueToolFixup + [LegionBtFix](https://github.com/watchthelight-labs/LegionBtFix) | pairing, LE, AirPods (audio only with the workaround in LegionBtFix) |
-| Audio | Tahoe: [VoodooHDA-Legion](https://github.com/watchthelight-labs/VoodooHDA-Legion) in `/Library/Extensions` (Tahoe has no AppleHDA); Sequoia: AppleALC 1.9.8 with `alcid=18` (ALC257; injected on both, used on Sequoia) | speakers and volume; microphone detected, jack and HDMI untested |
-| Touchpad | VoodooI2C + VoodooI2CHID + [LegionI2CArrowLake](https://github.com/watchthelight-labs/LegionI2CArrowLake) | works, polled (`-vi2c-force-polling`) |
-| Keyboard | the ITE 8258 USB controller with [LegionITEKbdFix](https://github.com/watchthelight-labs/LegionITEKbdFix); VoodooPS2 for the PS/2 device the DSDT declares | types; no backlight control; the arrow keys and F-key dome on my unit are hardware faults |
+| Boot | OpenCore 1.0.8 on its own EFI partition; Comet Lake CPUID spoof, `ProvideCurrentCpuInfo`, a classic MADT in place of the firmware's x2APIC-only one, 11 ACPI patches | boots Tahoe and Sequoia; [WTLLegionCbmrFix](https://github.com/watchthelight-labs/WTLLegionCbmrFix) unloads a firmware driver that otherwise panics macOS |
+| Graphics | [WTLNvidiaGfx](https://github.com/watchthelight-labs/WTLNvidiaGfx) (fork of NullMoth's NVIDIA driver) on the RTX 5070 | Metal 3, 2560x1600 at 165 Hz, 115 W (NvGfx 2.6.2-nvgfx.1 fixed the blocks in the Dock blur) |
+| Wi-Fi | [MtkWlan](https://github.com/watchthelight-labs/MtkWlan) 0.12.1 + [MtkWlanNative](https://github.com/watchthelight-labs/WTLWifiMenu) 0.4.15 | the Wi-Fi menu works: scans, joins, saves networks and auto-joins at boot (boot-args `mtkfe=native mtknativeif=1`) |
+| Bluetooth | [MtkBt](https://github.com/watchthelight-labs/MtkBt) + BlueToolFixup + [WTLLegionBtFix](https://github.com/watchthelight-labs/WTLLegionBtFix) | pairing, LE, AirPods (audio only with the workaround in LegionBtFix) |
+| Audio | Tahoe: [WTLAudio](https://github.com/watchthelight-labs/WTLAudio) in `/Library/Extensions` (Tahoe has no AppleHDA); Sequoia: AppleALC 1.9.8 with `alcid=18` (ALC257; injected on both, used on Sequoia) | speakers and volume; microphone detected, jack and HDMI untested |
+| Touchpad | VoodooI2C + VoodooI2CHID + [WTLI2CArrowLake](https://github.com/watchthelight-labs/WTLI2CArrowLake) | works, polled (`-vi2c-force-polling`) |
+| Keyboard | the ITE 8258 USB controller with [WTLLegionITEKbdFix](https://github.com/watchthelight-labs/WTLLegionITEKbdFix); VoodooPS2 for the PS/2 device the DSDT declares | types; no backlight control; the arrow keys and F-key dome on my unit are hardware faults |
 | Ethernet | RealtekRTL8111 | works |
 | Battery, EC | VirtualSMC + SMCBatteryManager + ECEnabler, SSDT-EC-USBX | battery shown |
 | Shut down | SSDT-FIXSHUTDOWN + `_PTS` rename | powers off (before: restarted) |
-| CPU | 24 cores, name via RestrictEvents, `ProcessorType 0x0F01` | works; [LegionCpuPower](https://github.com/watchthelight-labs/LegionCpuPower) lifts the hidden power limit and gives every core its own HWP range, with a thermal guard and fan control |
+| CPU | 24 cores, name via RestrictEvents, `ProcessorType 0x0F01` | works; [WTLLegionCpuPower](https://github.com/watchthelight-labs/WTLLegionCpuPower) lifts the hidden power limit and gives every core its own HWP range, with a thermal guard and fan control |
 | Sleep | disabled (`pmset sleep 0 hibernatemode 0 standby 0`) | not supported |
 | Webcam, SD, Thunderbolt | USB port enabled for the webcam | untested |
 

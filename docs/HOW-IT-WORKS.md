@@ -123,7 +123,7 @@ The README's kext table also lists MtkWlanNative 0.4.15 and LegionCpuPower 0.4.1
 The BIOS GPU mode decides which GPU drives the internal panel, and the firmware does not always keep the same one between boots. The OpenCore log tells which one it got: `Current FB at 0x6000000000` is the RTX 5070, `Current FB at 0x70800000` is the Intel iGPU.
 
 - **Discrete:** the panel is on the RTX 5070 and NvGfx drives it with Metal. This config is set up for that case: the NvGfx boot-args, `ResizeAppleGpuBars 0`, the IOMMU quirks and AMFIPass are all there for it.
-- **Hybrid:** the panel is on the iGPU (`8086:7D67`), and macOS has no accelerated driver for it. This config does not load one; the Intel work is in [XeGfx](https://github.com/watchthelight-labs/XeGfx). The config makes sure macOS at least keeps the iGPU: there is no `-wegnoigpu`, and WhateverGreen is loaded. An early config had `-wegnoigpu`, and on a Hybrid boot WindowServer found no framebuffer at all and stayed on the verbose console.
+- **Hybrid:** the panel is on the iGPU (`8086:7D67`), and macOS has no accelerated driver for it. This config does not load one; the Intel work is in [WTLIntelGfx](https://github.com/watchthelight-labs/WTLIntelGfx). The config makes sure macOS at least keeps the iGPU: there is no `-wegnoigpu`, and WhateverGreen is loaded. An early config had `-wegnoigpu`, and on a Hybrid boot WindowServer found no framebuffer at all and stayed on the verbose console.
 
 Nothing in the config changes between the two modes. The same EFI boots both, and the result depends on the BIOS setting. For a daily system, set Discrete in the BIOS.
 

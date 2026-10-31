@@ -106,7 +106,7 @@ OpenCore injects the kexts in the order of `Kernel > Add`, and a kext has to com
 
 The graphics driver is not here. NvGfx is installed from its own package into the system, not injected by OpenCore.
 
-The README's kext table also lists MtkWlanNative 0.4.14 and LegionCpuPower 0.4.1, and the README's Wi-Fi row names the boot-args `mtkfe=native mtknativeif=1`. The published config has none of these yet: it is the kext list of 2026-10-17, and the README says it is due a refresh.
+The README's kext table also lists MtkWlanNative 0.4.15 and LegionCpuPower 0.4.1, and the README's Wi-Fi row names the boot-args `mtkfe=native mtknativeif=1`. The published config has none of these yet: it is the kext list of 2026-10-17, and the README says it is due a refresh.
 
 ## NVRAM, security and SMBIOS
 
